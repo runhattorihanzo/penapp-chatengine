@@ -1,0 +1,82 @@
+import { fb } from 'service';
+import { useEffect } from 'react';
+
+export const App = () => {
+  useEffect(() => {
+    fb.firestore
+      .collection('chatUsers')
+      .where('userName', '==', 'runhattori')
+      .get()
+      .then(res => {
+        var user = res.docs[0]?.data();
+        console.log(user);
+      });
+  }, []);
+  return <>Hello from Runhatorri</>;
+};
+
+
+
+
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB1HvyK6aGlAG_GqvE6fYLIyLHjxqNi2P8",
+  authDomain: "penapp-aa47f.firebaseapp.com",
+  projectId: "penapp-aa47f",
+  storageBucket: "penapp-aa47f.appspot.com",
+  messagingSenderId: "1051298990391",
+  appId: "1:1051298990391:web:e750be957a0f290a17b2b2",
+  measurementId: "G-6HCEW0K1KJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+
+
+
+
+
+
+
+import { useChat } from 'context';
+import { useEffect } from 'react';
+import { getChats, chatEngine } from 'react-chat-engine';
+
+export const Chat = () => {
+  const { myChats, setMyChats, chatConfig, selectedChat } = useChat();
+
+  useEffect(() => {
+    console.log('My Chats;', myChats);
+  }, [myChats]);
+
+  return (
+    <>
+      {!!chatConfig && (
+        <chatEngine
+          hideUI={true}
+          useName={chatConfig.userName}
+          projectID={chatConfig.projectID}
+          userSecret={chatConfig.userSecret}
+          onConnect={() => {
+            getChats(chatConfig, setMyChats);
+          }}
+        />
+      )}
+
+      <div className="chat-container">
+        <div>
+          {selectedChat ? <></> : <div className="no-chat-selected"></div>}
+        </div>
+      </div>
+    </>
+  );
+};
